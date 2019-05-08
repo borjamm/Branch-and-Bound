@@ -25,14 +25,14 @@ class Problem:
         self.initial = initial
         self.goal = goal
 
-    def successor(self, state):
+    def successor(self, state): # Lista de todos los estados a partir de este
         """Given a state, return a sequence of (action, state) pairs reachable
         from this state. If there are many successors, consider an iterator
         that yields the successors one at a time, rather than building them
         all at once. Iterators will work fine within the framework."""
-        abstract
+        abstract # Sobreescribir
 
-    def goal_test(self, state):
+    def goal_test(self, state): # Comprobar si es final o no
         """Return True if the state is a goal. The default method compares the
         state to self.goal, as specified in the constructor. Implement this
         method if checking against a single self.goal is not enough."""
@@ -64,7 +64,7 @@ class Node:
     an explanation of how the f and h values are handled. You will not need to
     subclass this class."""
 
-    def __init__(self, state, parent=None, action=None, path_cost=0):
+    def __init__(self, state, parent=None, action=None, path_cost=0): # Solo el state
         """Create a search tree Node, derived from a parent by an action."""
         update(self, state=state, parent=parent, action=action,
                path_cost=path_cost, depth=0)
@@ -72,7 +72,7 @@ class Node:
             self.depth = parent.depth + 1
 
     def __repr__(self):
-        return "<Node %s>" % (self.state,)
+        return "<Node %s>" % (self.state,) # Print
 
     def path(self):
         """Create a list of nodes from the root to this node."""
@@ -82,12 +82,15 @@ class Node:
             x = x.parent
         return result
 
-    def expand(self, problem):
+    def expand(self, problem): # Esto devuelve una lista de nodos hijos, estado a que se referencia y su padre
         """Return a list of nodes reachable from this node. [Fig. 3.8]"""
         return [Node(next, self, act,
                      problem.path_cost(self.path_cost, self.state, act, next))
                 for (act, next) in problem.successor(self.state)]
 
+# La búsqueda esta aislada del problema.
+# Clase abstracta, dame sucesores y di si es final o no
+# Fringe: lista abierta
 
 # ______________________________________________________________________________
 ## Uninformed Search algorithms
@@ -96,31 +99,31 @@ def graph_search(problem, fringe):
     """Search through the successors of a problem to find a goal.
     The argument fringe should be an empty queue.
     If two paths reach a state, only use the best one. [Fig. 3.18]"""
-    count = 0
-    count1 = 0
+    visitados = 0
+    expandidos = 0
     closed = {}
-    fringe.append(Node(problem.initial))
+    fringe.append(Node(problem.initial)) # Todos los atributos de la clase node.
     while fringe:
         node = fringe.pop()
-        count1 += 1
+        visitados += 1
         if problem.goal_test(node.state):
-            print("Nodos visitados: ", count1)
-            print("Nodos expandidos: ", count)
+            print("Nodos visitados: ", visitados)
+            print("Nodos expandidos: ", expandidos)
             return node
         if node.state not in closed:
             closed[node.state] = True
             fringe.extend(node.expand(problem))
-            count += 1
-            #print(node.expand(problem))
+            expandidos += 1
+            #print(node.expand(problem)) # Importante saber el orden de la lista abierta para anchura y pila
     return None
 
 
-def breadth_first_graph_search(problem):
+def breadth_first_graph_search(problem): # Amplitud
     """Search the shallowest nodes in the search tree first. [p 74]"""
     return graph_search(problem, FIFOQueue())  # FIFOQueue -> fringe
 
 
-def depth_first_graph_search(problem):
+def depth_first_graph_search(problem): # Profundidad
     """Search the deepest nodes in the search tree first. [p 74]"""
     return graph_search(problem, Stack())
 

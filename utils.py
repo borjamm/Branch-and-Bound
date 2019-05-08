@@ -566,18 +566,12 @@ class rys(Queue):
 
     def extend(self, items):
         self.A.extend(items)
-        self.A.sort(key=lambda x: x.path_cost, reverse=True)
+        self.A.sort(key=lambda x: x.path_cost, reverse=True)# [4,3,2,1] # ordenar por un parametro con funcion lambda
+        # x es cada uno de los objetos de la lista, ordenar por el parametro pathcost
         # Introducimos por el final e innecesario mover los elementos de la pila al hacer pop.
 
     def pop(self):
-        return self.A.pop()
-
-        # e = self.A[self.start]
-        # self.start += 1
-        # if self.start > 5 and self.start > len(self.A) / 2:
-        #    self.A = self.A[self.start:]
-        #    self.start = 0
-        # return e
+        return self.A.pop() # Coge el último elemento de la lista
 
 
 class rysSub(Queue):
